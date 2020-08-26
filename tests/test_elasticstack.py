@@ -20,8 +20,10 @@ def test_elasticstack_namespace(kube):
 def test_elasticsearch_statefulset(kube):
     """Creating ES deployment on our test namespace"""
     print("Validating ES Yaml and creating it in the test namespace")
-    
-    kube.wait_for_registered(timeout=120)
+    try:
+        kube.wait_for_registered(timeout=180)
+    except:
+        print("Handling the timeout exception")
     deployments = kube.get_statefulsets()
     elasticsearch_state = deployments.get('elasticsearch')
     print("Number of Elastic search is: " + str(len(deployments )))
