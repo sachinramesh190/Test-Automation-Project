@@ -31,24 +31,58 @@ spec:
           httpGet:
             path: /_cat/health
             port: 9200
-          #initialDelaySeconds: 30
+          initialDelaySeconds: 30
           periodSeconds: 5
+          failureThreshold: 15
+          timeoutSeconds: 10
         readinessProbe:
           httpGet:
             path: /_cat/health
             port: 9200
-          #initialDelaySeconds: 60
+          initialDelaySeconds: 60
+          failureThreshold: 15
+          timeoutSeconds: 10
           periodSeconds: 5
-        startupProbe:
-          httpGet:
-            path: /_cat/health
-            port: 9200
-          initialDelaySeconds: 150
-          periodSeconds: 5
-          timeoutSeconds: 3
-          failureThreshold: 10        
+        # startupProbe:
+        #   httpGet:
+        #     path: /_cat/health
+        #     port: 9200
+        #   initialDelaySeconds: 60
+        #   periodSeconds: 5
+        #   timeoutSeconds: 3
+        #   failureThreshold: 10        
       volumes:
       - name: data
         hostPath:
           path: /mnt/data
           type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elasticsearch
+  labels:
+    service: elasticsearch
+spec:
+  ports:
+  - port: 9200
+    name: client
+  - port: 9300
+    name: nodes
+  selector:
+    app: elasticsearch
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: elkaccess
+  labels:
+    service: elkaccess
+spec:
+  type: NodePort
+  ports:
+    - port: 80
+      targetPort: 9200
+      nodePort: 31111
+  selector:
+    app: elasticsearch
