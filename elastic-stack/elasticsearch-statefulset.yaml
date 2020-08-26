@@ -83,6 +83,6 @@ spec:
   ports:
     - port: 80
       targetPort: 9200
-      nodePort: 31111
+      #nodePort: 31111
   selector:
     app: elasticsearch
