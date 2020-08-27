@@ -1,4 +1,4 @@
-node {
+node('AWS EC2'){
 
   def local_elasticurl
   def local_kibanaurl
